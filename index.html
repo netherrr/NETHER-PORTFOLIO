@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>NETHER — світи всередині Telegram</title>
+  <meta name="description" content="NETHER будує світи всередині Telegram: AI-містикиня Mira, радар живих зустрічей GoGo, памʼять VERTUU SPY, кіберспортивна арена TDM і Tinder для КПІ. Boти та міні-застосунки, які відчуваються як магія. / NETHER builds worlds inside Telegram — bots and mini apps that feel like magic." />
+  <meta name="theme-color" content="#030304" />
+  <meta property="og:title" content="NETHER — worlds inside Telegram" />
+  <meta property="og:description" content="AI mystic. A radar for real-life meetups. Memory Telegram doesn't have. Esports arenas. Bots and mini apps that feel like magic." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23030304'/%3E%3Cpath d='M20 46V18l24 28V18' stroke='%23F2F0EC' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+</head>
+<body data-world="void">
+
+  <!-- ═══════════ PRELOADER ═══════════ -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="pre-center">
+      <div class="pre-word" id="preWord">MIRA</div>
+      <div class="pre-count"><span id="preCount">00</span></div>
+    </div>
+    <div class="pre-caption" data-i18n="pre.caption">завантаження всесвітів</div>
+    <div class="pre-bar"><i id="preBar"></i></div>
+  </div>
+
+  <!-- ═══════════ WEBGL / OVERLAYS ═══════════ -->
+  <canvas id="webgl" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-label" id="cursorLabel"></span></div>
+
+  <!-- ═══════════ NAV ═══════════ -->
+  <header class="nav" id="nav">
+    <a class="nav-logo" href="#hero" data-cursor="hover">NETHER<sup>®</sup></a>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button class="lang-btn is-active" id="langUA" data-cursor="hover">UA</button>
+        <span class="lang-sep">/</span>
+        <button class="lang-btn" id="langEN" data-cursor="hover">EN</button>
+      </div>
+      <a class="nav-cta" href="#contact" data-cursor="hover" data-i18n="nav.cta">звʼязок</a>
+    </div>
+  </header>
+
+  <!-- ═══════════ SIDE RAIL ═══════════ -->
+  <nav class="rail" id="rail" aria-label="Sections">
+    <a href="#hero"    data-cursor="hover" data-rail="hero"><span class="rail-tip" data-i18n="rail.hero">вступ</span></a>
+    <a href="#mira"    data-cursor="hover" data-rail="mira"><span class="rail-tip">Mira</span></a>
+    <a href="#gogo"    data-cursor="hover" data-rail="gogo"><span class="rail-tip">GoGo</span></a>
+    <a href="#spy"     data-cursor="hover" data-rail="spy"><span class="rail-tip">VERTUU SPY</span></a>
+    <a href="#tdm"     data-cursor="hover" data-rail="tdm"><span class="rail-tip">NETHER TDM</span></a>
+    <a href="#kpinder" data-cursor="hover" data-rail="kpinder"><span class="rail-tip">KPInder</span></a>
+    <a href="#clients" data-cursor="hover" data-rail="clients"><span class="rail-tip" data-i18n="rail.clients">клієнти</span></a>
+    <a href="#about"   data-cursor="hover" data-rail="about"><span class="rail-tip" data-i18n="rail.about">про мене</span></a>
+    <a href="#contact" data-cursor="hover" data-rail="contact"><span class="rail-tip" data-i18n="rail.contact">звʼязок</span></a>
+  </nav>
+
+  <main id="main">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero" id="hero" data-world="void">
+      <p class="hero-over" data-i18n="hero.over">Telegram-native продукти · Київ</p>
+      <h1 class="hero-title" aria-label="NETHER">
+        <span class="h-l">N</span><span class="h-l">E</span><span class="h-l">T</span><span class="h-l">H</span><span class="h-l">E</span><span class="h-l">R</span>
+      </h1>
+      <p class="hero-sub"><span data-i18n="hero.sub">Я будую світи всередині Telegram —<br>ботів і міні-застосунки, які відчуваються як магія.</span></p>
+      <div class="hero-meta">
+        <span class="hero-chip" data-i18n="hero.chip1">30 000+ користувачів/міс — пік</span>
+        <span class="hero-chip" data-i18n="hero.chip2">9 живих світів</span>
+      </div>
+      <div class="hero-scroll" id="heroScroll">
+        <span data-i18n="hero.scroll">скроль, щоб увійти</span>
+        <i></i>
+      </div>
+    </section>
+
+    <!-- ═══════════ MANIFESTO ═══════════ -->
+    <section class="manifesto" id="manifesto">
+      <p class="mani-line" data-i18n="mani.l1">Більшість бачить у Telegram просто месенджер.</p>
+      <p class="mani-line" data-i18n="mani.l2">Я бачу порожній всесвіт, який чекає на світи.</p>
+      <p class="mani-line" data-i18n="mani.l3">AI-містикиня, що читає карти. Радар живих зустрічей. Памʼять, якої не має сам Telegram. Арени, де грають за трофеї.</p>
+      <p class="mani-line mani-last" data-i18n="mani.l4">Нижче — пʼять світів. Усі живі. Усі справжні.</p>
+    </section>
+
+    <!-- ═══════════ STATS ═══════════ -->
+    <section class="stats" id="stats">
+      <div class="stat">
+        <div class="stat-num"><span class="count" data-count="9">0</span></div>
+        <div class="stat-cap" data-i18n="stats.s1">світів запущено</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span class="count" data-count="30000" data-plus="1">0</span></div>
+        <div class="stat-cap" data-i18n="stats.s2">користувачів на місяць — пік</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num stat-num--static">24/7</div>
+        <div class="stat-cap" data-i18n="stats.s3">боти не сплять. я — іноді</div>
+      </div>
+    </section>
+
+    <!-- ═══════════ WORLD 01 · MIRA ═══════════ -->
+    <section class="world world--mira" id="mira" data-world="mira">
+      <div class="world-gate">
+        <span class="gate-index">01</span>
+        <h2 class="gate-title" data-text="MIRA">MIRA</h2>
+        <span class="gate-kind" data-i18n="mira.kind">світ містики</span>
+      </div>
+      <div class="world-body">
+        <div class="w-info">
+          <p class="w-tag" data-i18n="mira.tag">AI-астрологиня і тарологиня, що говорить від першої особи</p>
+          <p class="w-desc" data-i18n="mira.desc">Персонажний AI-продукт. Mira тягне карти Таро, розбирає натальні карти та щоденні транзити — і робить це з характером живої містикині, а не довідника. Три безкоштовні розклади щодня, реферальні бонуси, три мови.</p>
+          <ul class="w-chips">
+            <li data-i18n="mira.c1">Таро-розклади</li>
+            <li data-i18n="mira.c2">Натальна карта</li>
+            <li data-i18n="mira.c3">Щоденні транзити</li>
+            <li>UA · RU · EN</li>
+          </ul>
+          <a class="w-cta" href="https://t.me/MiraAstroBot" target="_blank" rel="noopener" data-cursor="hover">
+            <span data-i18n="mira.cta">відкрити @MiraAstroBot</span><i>→</i>
+          </a>
+        </div>
+        <div class="w-stage mira-stage">
+          <p class="mira-hint" data-i18n="mira.hint">торкнись колоди — Mira витягне карту</p>
+          <div class="mira-deck" id="miraDeck" data-cursor="draw">
+            <div class="tarot"><div class="tarot-face tarot-back"><svg viewBox="0 0 24 24" class="tarot-star"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></div><div class="tarot-face tarot-front"><span class="tarot-name"></span><span class="tarot-glyph"></span></div></div>
+            <div class="tarot"><div class="tarot-face tarot-back"><svg viewBox="0 0 24 24" class="tarot-star"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></div><div class="tarot-face tarot-front"><span class="tarot-name"></span><span class="tarot-glyph"></span></div></div>
+            <div class="tarot"><div class="tarot-face tarot-back"><svg viewBox="0 0 24 24" class="tarot-star"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></div><div class="tarot-face tarot-front"><span class="tarot-name"></span><span class="tarot-glyph"></span></div></div>
+          </div>
+          <p class="mira-reading" id="miraReading"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ WORLD 02 · GOGO ═══════════ -->
+    <section class="world world--gogo" id="gogo" data-world="gogo">
+      <div class="world-gate">
+        <span class="gate-index">02</span>
+        <h2 class="gate-title" data-text="GOGO">GOGO</h2>
+        <span class="gate-kind" data-i18n="gogo.kind">світ міста</span>
+      </div>
+      <div class="world-body world-body--flip">
+        <div class="w-info">
+          <p class="w-tag" data-i18n="gogo.tag">знайди компанію на найближчі години</p>
+          <p class="w-desc" data-i18n="gogo.desc">Анти-дейтинг. Кава, прогулянка, бар, кіно — обираєш активність, час і район Києва та знаходиш людей із такими самими планами прямо зараз. Метчі, запити, бейджі довіри й рейтинги — повноцінний Mini App, який я заснував і веду як продукт.</p>
+          <ul class="w-chips">
+            <li data-i18n="gogo.c1">12 активностей</li>
+            <li data-i18n="gogo.c2">10 районів Києва</li>
+            <li data-i18n="gogo.c3">метчі та рейтинги</li>
+            <li data-i18n="gogo.c4">заснував і веду</li>
+          </ul>
+          <a class="w-cta" href="https://t.me/GoGoUaBot" target="_blank" rel="noopener" data-cursor="hover">
+            <span data-i18n="gogo.cta">відкрити @GoGoUaBot</span><i>→</i>
+          </a>
+        </div>
+        <div class="w-stage gogo-stage">
+          <p class="gogo-hint" data-i18n="gogo.hint">обери, що робити сьогодні</p>
+          <div class="gogo-chips" id="gogoChips">
+            <button data-cursor="hover">☕ <span data-i18n="gogo.a1">Кава</span></button>
+            <button data-cursor="hover">🚶 <span data-i18n="gogo.a2">Прогулянка</span></button>
+            <button data-cursor="hover">🍺 <span data-i18n="gogo.a3">Бар</span></button>
+            <button data-cursor="hover">🎬 <span data-i18n="gogo.a4">Кіно</span></button>
+            <button data-cursor="hover">🎲 <span data-i18n="gogo.a5">Настілки</span></button>
+          </div>
+          <div class="radar" id="radar">
+            <i class="radar-ring"></i><i class="radar-ring"></i><i class="radar-ring"></i>
+            <i class="radar-sweep"></i>
+            <b class="radar-you"></b>
+            <svg class="radar-links" id="radarLinks"></svg>
+            <div class="radar-toast" id="radarToast" data-i18n="gogo.match">метч! списуйтесь у Telegram</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ WORLD 03 · VERTUU SPY ═══════════ -->
+    <section class="world world--spy" id="spy" data-world="spy">
+      <div class="world-gate">
+        <span class="gate-index">03</span>
+        <h2 class="gate-title gate-title--long" data-text="VERTUU SPY">VERTUU SPY</h2>
+        <span class="gate-kind" data-i18n="spy.kind">світ памʼяті</span>
+      </div>
+      <div class="world-body">
+        <div class="w-info">
+          <p class="w-tag" data-i18n="spy.tag">Telegram забуває. Цей бот — ні.</p>
+          <p class="w-desc" data-i18n="spy.desc">Інструмент для Telegram Business: зберігає копії відредагованих і видалених повідомлень — хто, коли, що було і що стало. Докази лишаються навіть тоді, коли співрозмовник передумав.</p>
+          <ul class="w-chips">
+            <li data-i18n="spy.c1">було → стало</li>
+            <li data-i18n="spy.c2">збережені копії</li>
+            <li data-i18n="spy.c3">Telegram Business</li>
+          </ul>
+          <a class="w-cta" href="https://t.me/vertuuSpyBot" target="_blank" rel="noopener" data-cursor="hover">
+            <span data-i18n="spy.cta">відкрити @vertuuSpyBot</span><i>→</i>
+          </a>
+        </div>
+        <div class="w-stage spy-stage">
+          <div class="spy-chat" id="spyChat">
+            <div class="spy-msg spy-msg--in" id="spyMsg">
+              <span class="spy-msg-text" id="spyMsgText" data-i18n="spy.m1">скину гроші завтра, чесно 🤝</span>
+              <span class="spy-msg-meta"><span class="spy-edited" id="spyEdited" data-i18n="spy.edited">ред.</span> 23:47</span>
+            </div>
+            <div class="spy-deleted" id="spyDeleted" data-i18n="spy.deleted">повідомлення видалено</div>
+            <div class="spy-card" id="spyCard">
+              <div class="spy-card-head">👁 <b>VERTUU SPY</b> · <span data-i18n="spy.saved">збережена копія</span></div>
+              <div class="spy-card-row"><span data-i18n="spy.was">було:</span> <em data-i18n="spy.m1b">скину гроші завтра, чесно 🤝</em></div>
+              <div class="spy-card-row"><span data-i18n="spy.became">стало:</span> <em data-i18n="spy.m2">про які гроші мова? 🤔</em></div>
+              <div class="spy-card-row spy-card-row--del"><span data-i18n="spy.then">потім:</span> <em data-i18n="spy.gone">видалено · 23:49</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ WORLD 04 · NETHER TDM ═══════════ -->
+    <section class="world world--tdm" id="tdm" data-world="tdm">
+      <div class="world-gate">
+        <span class="gate-index">04</span>
+        <h2 class="gate-title gate-title--long" data-text="NETHER TDM">NETHER TDM</h2>
+        <span class="gate-kind" data-i18n="tdm.kind">світ арени</span>
+      </div>
+      <div class="world-body world-body--flip">
+        <div class="w-info">
+          <p class="w-tag" data-i18n="tdm.tag">кіберспортивна екосистема PUBG Mobile TDM</p>
+          <p class="w-desc" data-i18n="tdm.desc">Три продукти — один світ. HUB: маркетплейс уроків, паків і налаштувань від перевірених гравців, з оплатою і доступами всередині Mini App. TOURS: турніри з сітками, призовими та заявками. SCHOOL: навчання гри. Побудовано навколо власного геймерського бренду NETHER.</p>
+          <div class="tdm-pillars">
+            <a href="https://t.me/TDMHUBBOT" target="_blank" rel="noopener" data-cursor="hover">
+              <b>HUB</b><span data-i18n="tdm.p1">маркетплейс паків та уроків</span><i>@TDMHUBBOT</i>
+            </a>
+            <a href="https://t.me/NetherTdmBot" target="_blank" rel="noopener" data-cursor="hover">
+              <b>TOURS</b><span data-i18n="tdm.p2">турніри, сітки, призові</span><i>@NetherTdmBot</i>
+            </a>
+            <a href="https://t.me/TDMSCHOOLBOT" target="_blank" rel="noopener" data-cursor="hover">
+              <b>SCHOOL</b><span data-i18n="tdm.p3">школа TDM-майстерності</span><i>@TDMSCHOOLBOT</i>
+            </a>
+          </div>
+        </div>
+        <div class="w-stage tdm-stage">
+          <svg class="bracket" id="bracket" viewBox="0 0 460 300" fill="none" aria-hidden="true">
+            <!-- left round 1 -->
+            <path class="br" d="M10 30 h60 v40 h-60" /><path class="br" d="M10 110 h60 v40 h-60" />
+            <path class="br" d="M10 190 h60 v40 h-60" /><path class="br" d="M10 270 h60 v-40 h-60" />
+            <!-- left round 2 -->
+            <path class="br" d="M70 50 h60 v80 h-60" /><path class="br" d="M70 210 h60 v-80 h-60" />
+            <!-- left final -->
+            <path class="br" d="M130 90 h60 v80 h-60" />
+            <!-- right round 1 -->
+            <path class="br" d="M450 30 h-60 v40 h60" /><path class="br" d="M450 110 h-60 v40 h60" />
+            <path class="br" d="M450 190 h-60 v40 h60" /><path class="br" d="M450 270 h-60 v-40 h60" />
+            <!-- right round 2 -->
+            <path class="br" d="M390 50 h-60 v80 h60" /><path class="br" d="M390 210 h-60 v-80 h60" />
+            <!-- right final -->
+            <path class="br" d="M330 90 h-60 v80 h60" />
+            <!-- center -->
+            <path class="br br--win" d="M190 130 h80 M230 130 v-24" />
+            <circle class="br-dot" cx="230" cy="88" r="4" />
+          </svg>
+          <div class="tdm-pack" id="tdmPack" data-cursor="hover">
+            <div class="pack-shine"></div>
+            <div class="pack-top"><span>👑 NETHER</span><b>$7</b></div>
+            <div class="pack-title" data-i18n="tdm.pack">100 порад від NETHER</div>
+            <div class="pack-tags"><span>AIM</span><span>PEEKS</span><span>MOVEMENT</span><span>TDM-IQ</span></div>
+          </div>
+          <div class="tdm-prize"><span data-i18n="tdm.prize">призовий фонд</span><b>500 UAH</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ WORLD 05 · KPINDER ═══════════ -->
+    <section class="world world--kpinder" id="kpinder" data-world="kpinder">
+      <div class="world-gate">
+        <span class="gate-index">05</span>
+        <h2 class="gate-title" data-text="KPINDER">KPINDER</h2>
+        <span class="gate-kind" data-i18n="kpinder.kind">світ кампусу</span>
+      </div>
+      <div class="world-body">
+        <div class="w-info">
+          <p class="w-tag" data-i18n="kpinder.tag">Tinder для КПІ</p>
+          <p class="w-desc" data-i18n="kpinder.desc">Знайомства й соціальне життя найбільшого кампусу країни: профілі з факультетом, курсом і гуртожитком, свайпи, туси, івенти КПІ, live-статуси та рейтинги. Соцмережа, що живе повністю в Telegram.</p>
+          <ul class="w-chips">
+            <li data-i18n="kpinder.c1">свайпи</li>
+            <li data-i18n="kpinder.c2">туси й івенти</li>
+            <li data-i18n="kpinder.c3">live-статуси</li>
+            <li data-i18n="kpinder.c4">рейтинги</li>
+          </ul>
+          <a class="w-cta" href="https://t.me/KPInderBot" target="_blank" rel="noopener" data-cursor="hover">
+            <span data-i18n="kpinder.cta">відкрити @KPInderBot</span><i>→</i>
+          </a>
+        </div>
+        <div class="w-stage kpinder-stage">
+          <p class="kp-hint" data-i18n="kpinder.hint">тягни картку — як у справжньому</p>
+          <div class="kp-stack" id="kpStack">
+            <article class="kp-card" data-cursor="drag">
+              <div class="kp-photo kp-photo--c"><span>Д</span></div>
+              <div class="kp-body"><b>Діма, 20</b><span>ФПМ · <span data-i18n="kpinder.dorm">гуртожиток</span> №16</span><em data-i18n="kpinder.bio3">туса завтра, треба +1</em></div>
+            </article>
+            <article class="kp-card" data-cursor="drag">
+              <div class="kp-photo kp-photo--b"><span>С</span></div>
+              <div class="kp-body"><b>Соля, 18</b><span>ФЛ · <span data-i18n="kpinder.dorm2">гуртожиток</span> №20</span><em data-i18n="kpinder.bio2">live: шукаю компанію в бібліотеку</em></div>
+            </article>
+            <article class="kp-card" data-cursor="drag">
+              <div class="kp-photo kp-photo--a"><span>М</span></div>
+              <div class="kp-body"><b>Макс, 19</b><span>ФІОТ · <span data-i18n="kpinder.dorm3">гуртожиток</span> №4</span><em data-i18n="kpinder.bio1">шукаю тімейта в дуо</em></div>
+            </article>
+          </div>
+          <div class="kp-actions">
+            <button class="kp-btn kp-btn--nope" id="kpNope" data-cursor="hover" aria-label="Nope">✕</button>
+            <button class="kp-btn kp-btn--like" id="kpLike" data-cursor="hover" aria-label="Like">♥</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ CLIENT WORK ═══════════ -->
+    <section class="clients" id="clients">
+      <div class="clients-head">
+        <span class="clients-over" data-i18n="clients.over">друга лінія</span>
+        <h2 class="clients-title" data-i18n="clients.title">Світи, збудовані на замовлення</h2>
+      </div>
+      <div class="dossier" id="dossier">
+        <a class="dossier-row" href="https://t.me/booksfromtaisaBot" target="_blank" rel="noopener" data-cursor="hover" data-accent="#F5C7D5">
+          <span class="d-index">06</span>
+          <span class="d-name">Books from Taisa</span>
+          <span class="d-desc" data-i18n="clients.books">e-бібліотека: 3000+ книг українською, 4000+ англійською, 1000 аудіокниг · підписки та кабінет</span>
+          <span class="d-badge" data-i18n="clients.badge">клієнт</span>
+          <span class="d-arrow">↗</span>
+        </a>
+        <a class="dossier-row" href="https://t.me/VERTUU_projects_bot" target="_blank" rel="noopener" data-cursor="hover" data-accent="#9DB2CE">
+          <span class="d-index">07</span>
+          <span class="d-name">VERTUU PROJECTS</span>
+          <span class="d-desc" data-i18n="clients.vertuu">хаб медійної екосистеми: канали, команда, анти-скам верифікація співробітників</span>
+          <span class="d-badge" data-i18n="clients.badge2">клієнт</span>
+          <span class="d-arrow">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══════════ ABOUT ═══════════ -->
+    <section class="about" id="about">
+      <p class="about-name">незер<span class="about-dot">.</span> <span class="about-facts">23<i>·</i><span data-i18n="about.kyiv">Київ</span></span></p>
+      <div class="about-lines">
+        <p data-i18n="about.l1">Пишу код, проєктую продукти і вирощую спільноти — усе всередині Telegram.</p>
+        <p data-i18n="about.l2">Вірю в AI як у нову матерію продуктів і в українську мову як у стандарт, а не виняток.</p>
+        <p data-i18n="about.l3">Показав десяткам людей, що україномовний контент у геймінгу — працює.</p>
+      </div>
+      <ul class="about-skills">
+        <li data-i18n="about.s1">AI-інженерія</li>
+        <li data-i18n="about.s2">продукт</li>
+        <li data-i18n="about.s3">дизайн</li>
+        <li data-i18n="about.s4">боти</li>
+        <li>mini apps</li>
+        <li data-i18n="about.s5">спільноти</li>
+        <li data-i18n="about.s6">growth</li>
+      </ul>
+    </section>
+
+    <!-- ═══════════ CONTACT ═══════════ -->
+    <section class="contact" id="contact">
+      <p class="contact-over" data-i18n="contact.over">є ідея світу?</p>
+      <h2 class="contact-title" data-i18n="contact.title">Побудуймо<br>щось разом.</h2>
+      <a class="contact-btn" id="contactBtn" href="https://t.me/nether044" target="_blank" rel="noopener" data-cursor="hover">
+        <span data-i18n="contact.btn">написати @nether044</span>
+      </a>
+      <div class="contact-links">
+        <a href="https://t.me/netherprojects" target="_blank" rel="noopener" data-cursor="hover"><span data-i18n="contact.channel">канал</span> @netherprojects</a>
+        <a href="mailto:maliarn.2003@gmail.com" data-cursor="hover">maliarn.2003@gmail.com</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span data-i18n="footer.made">Зроблено вручну в Києві. Жодного шаблону.</span>
+    <span>© 2026 NETHER</span>
+  </footer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
