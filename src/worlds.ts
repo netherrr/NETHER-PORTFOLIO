@@ -158,9 +158,11 @@ function initSpy(reducedMotion: boolean): void {
   const deleted = $('#spyDeleted')
   const card = $('#spyCard')
   const chat = $('#spyChat')
-  if (!msg || !msgText || !edited || !deleted || !card || !chat) return
+  const typing = $('#spyTyping')
+  if (!msg || !msgText || !edited || !deleted || !card || !chat || !typing) return
 
   if (reducedMotion) {
+    typing.classList.add('is-hidden')
     edited.classList.add('on')
     deleted.classList.add('on')
     card.classList.add('on')
@@ -169,6 +171,8 @@ function initSpy(reducedMotion: boolean): void {
 
   const reset = () => {
     msgText.textContent = t('spy.m1')
+    typing.classList.remove('is-hidden')
+    msg.classList.add('is-hidden')
     msg.classList.remove('is-gone')
     edited.classList.remove('on')
     deleted.classList.remove('on')
@@ -180,12 +184,20 @@ function initSpy(reducedMotion: boolean): void {
   tl.call(reset)
   tl.call(
     () => {
+      typing.classList.add('is-hidden')
+      msg.classList.remove('is-hidden')
+    },
+    [],
+    1.4,
+  )
+  tl.call(
+    () => {
       gsap.fromTo(msgText, { opacity: 0.2 }, { opacity: 1, duration: 0.35 })
       msgText.textContent = t('spy.m2')
       edited.classList.add('on')
     },
     [],
-    1.6,
+    3.0,
   )
   tl.call(
     () => {
@@ -193,11 +205,11 @@ function initSpy(reducedMotion: boolean): void {
       deleted.classList.add('on')
     },
     [],
-    3.4,
+    4.8,
   )
-  tl.call(() => card.classList.add('on'), [], 4.3)
-  tl.to(chat, { opacity: 0, duration: 0.6 }, 8.6)
-  tl.to({}, { duration: 0.1 }, 9.2)
+  tl.call(() => card.classList.add('on'), [], 5.7)
+  tl.to(chat, { opacity: 0, duration: 0.6 }, 10.0)
+  tl.to({}, { duration: 0.1 }, 10.6)
 
   ScrollTrigger.create({
     trigger: '#spy',
@@ -276,7 +288,19 @@ function initKpinder(): void {
   let startX = 0
   let startY = 0
 
+  const stamps = (card: HTMLElement) => ({
+    like: card.querySelector<HTMLElement>('.kp-stamp--like'),
+    nope: card.querySelector<HTMLElement>('.kp-stamp--nope'),
+  })
+
+  const setStamps = (card: HTMLElement, dx: number) => {
+    const s = stamps(card)
+    if (s.like) s.like.style.opacity = String(Math.min(Math.max(dx / 110, 0), 1))
+    if (s.nope) s.nope.style.opacity = String(Math.min(Math.max(-dx / 110, 0), 1))
+  }
+
   const fly = (card: HTMLElement, dir: 1 | -1, dy = 0) => {
+    setStamps(card, dir * 130)
     gsap.to(card, {
       x: dir * Math.max(innerWidth * 0.6, 420),
       y: dy * 0.4,
@@ -285,6 +309,7 @@ function initKpinder(): void {
       duration: 0.55,
       ease: 'power2.in',
       onComplete: () => {
+        setStamps(card, 0)
         stack.prepend(card)
         layout()
       },
@@ -304,6 +329,7 @@ function initKpinder(): void {
     const dx = e.clientX - startX
     const dy = e.clientY - startY
     gsap.set(active, { x: dx, y: dy * 0.35, rotation: dx * 0.055 })
+    setStamps(active, dx)
   })
 
   const release = (e: PointerEvent) => {
@@ -311,7 +337,10 @@ function initKpinder(): void {
     const dx = e.clientX - startX
     const dy = e.clientY - startY
     if (Math.abs(dx) > 90) fly(active, dx > 0 ? 1 : -1, dy)
-    else gsap.to(active, { x: 0, y: 0, rotation: 0, duration: 0.7, ease: 'elastic.out(1, 0.55)' })
+    else {
+      setStamps(active, 0)
+      gsap.to(active, { x: 0, y: 0, rotation: 0, duration: 0.7, ease: 'elastic.out(1, 0.55)' })
+    }
     active = null
   }
 

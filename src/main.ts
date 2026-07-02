@@ -82,6 +82,69 @@ const WORLD_MAP: [string, WorldName][] = [
   ['#contact', 'void'],
 ]
 
+/* ── ambient glow that follows the current world ── */
+
+const ACCENTS: Record<WorldName, string> = {
+  void: '#6d7fa8',
+  mira: '#a78bfa',
+  gogo: '#5b8cff',
+  spy: '#ffb454',
+  tdm: '#4ee0d8',
+  kpinder: '#ff7a93',
+}
+
+const glowEl = $('#worldglow')
+const glow = { r: 109, g: 127, b: 168 }
+const paintGlow = () => {
+  if (glowEl)
+    glowEl.style.background = `radial-gradient(56% 42% at 50% 40%, rgba(${glow.r | 0}, ${glow.g | 0}, ${glow.b | 0}, 0.13), transparent 72%)`
+}
+paintGlow()
+
+function setGlow(name: WorldName): void {
+  const n = parseInt(ACCENTS[name].slice(1), 16)
+  const target = { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
+  if (RM) {
+    Object.assign(glow, target)
+    paintGlow()
+    return
+  }
+  gsap.to(glow, { ...target, duration: 1.4, ease: 'power2.inOut', overwrite: 'auto', onUpdate: paintGlow })
+}
+
+/* ── film chapter HUD ── */
+
+const HUD_MAP: Partial<Record<WorldName, [string, string]>> = {
+  mira: ['01', 'MIRA'],
+  gogo: ['02', 'GOGO'],
+  spy: ['03', 'VERTUU SPY'],
+  tdm: ['04', 'NETHER TDM'],
+  kpinder: ['05', 'KPINDER'],
+}
+
+const hud = $('#hud')
+const hudIndex = $('#hudIndex')
+const hudName = $('#hudName')
+
+function setHud(name: WorldName): void {
+  if (!hud || !hudIndex || !hudName) return
+  const chapter = HUD_MAP[name]
+  if (!chapter) {
+    hud.classList.remove('on')
+    return
+  }
+  hudIndex.textContent = chapter[0]
+  hudName.textContent = chapter[1]
+  hud.classList.add('on')
+  if (!RM) {
+    gsap.fromTo(
+      [hudIndex, hudName],
+      { y: 9, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.5, stagger: 0.07, ease: 'power3.out', overwrite: 'auto' },
+    )
+  }
+}
+
 WORLD_MAP.forEach(([sel, name]) => {
   ScrollTrigger.create({
     trigger: sel,
@@ -92,6 +155,8 @@ WORLD_MAP.forEach(([sel, name]) => {
       currentWorld = name
       document.body.dataset.world = name
       nebula?.setWorld(name)
+      setGlow(name)
+      setHud(name)
     },
   })
 })
@@ -128,14 +193,65 @@ $$('a[href^="#"]').forEach((a) => {
 
 const nav = $('#nav')
 let lastY = 0
+let vel = 0
 const onScrollY = (y: number) => {
   if (!nav) return
   if (y > 160 && y > lastY + 3) nav.classList.add('is-tucked')
   else if (y < lastY - 3 || y <= 160) nav.classList.remove('is-tucked')
   lastY = y
 }
-if (lenis) lenis.on('scroll', (e: { scroll: number }) => onScrollY(e.scroll))
-else addEventListener('scroll', () => onScrollY(scrollY), { passive: true })
+if (lenis) {
+  lenis.on('scroll', (e: { scroll: number; velocity: number }) => {
+    onScrollY(e.scroll)
+    vel = e.velocity
+  })
+} else addEventListener('scroll', () => onScrollY(scrollY), { passive: true })
+
+/* ═══════════ velocity typography: marquee + gate skew ═══════════ */
+
+const mTrack1 = $('#mTrack1')
+const mTrack2 = $('#mTrack2')
+const marqueeEl = $('#marquee')
+
+if (!RM && mTrack1 && mTrack2 && marqueeEl) {
+  let x1 = 0
+  let x2 = 0
+  let w1 = 1
+  let w2 = 1
+  let visible = false
+  let skew = 0
+  const gateTitles = $$('.gate-title')
+  let gskew = 0
+
+  const measure = () => {
+    w1 = mTrack1.scrollWidth / 2 || 1
+    w2 = mTrack2.scrollWidth / 2 || 1
+  }
+  measure()
+  addEventListener('resize', measure)
+
+  new IntersectionObserver(([entry]) => (visible = entry.isIntersecting), { rootMargin: '120px' }).observe(marqueeEl)
+
+  gsap.ticker.add((_time, dt) => {
+    vel *= 0.94 // settle when lenis goes quiet
+
+    if (visible) {
+      const boost = Math.min(Math.abs(vel) * 0.02, 5)
+      x1 = (x1 + (0.05 + boost * 0.03) * dt) % w1
+      x2 = (x2 + (0.032 + boost * 0.02) * dt) % w2
+      const targetSkew = Math.max(-9, Math.min(9, vel * 0.24))
+      skew += (targetSkew - skew) * 0.09
+      gsap.set(mTrack1, { x: -x1, skewX: -skew })
+      gsap.set(mTrack2, { x: x2 - w2, skewX: -skew })
+    }
+
+    const gTarget = Math.max(-3.4, Math.min(3.4, vel * 0.09))
+    gskew += (gTarget - gskew) * 0.09
+    if (Math.abs(gskew) > 0.03) {
+      gateTitles.forEach((el) => gsap.set(el, { skewY: gskew }))
+    }
+  })
+}
 
 /* ═══════════ cursor ═══════════ */
 
@@ -411,6 +527,8 @@ function heroIntro(): void {
   gsap
     .timeline()
     .to('.h-l', { yPercent: 0, duration: 1.2, ease: 'expo.out', stagger: 0.065 })
+    /* release letters to CSS so :hover transforms can take over */
+    .call(() => gsap.set('.h-l', { clearProps: 'transform' }), [], 1.65)
     .from('.hero-over', { y: 18, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.75')
     .from('.hero-sub', { y: 26, opacity: 0, duration: 0.9, ease: 'power3.out' }, '-=0.62')
     .from('.hero-chip', { y: 16, opacity: 0, duration: 0.7, stagger: 0.09, ease: 'power3.out' }, '-=0.6')
@@ -422,6 +540,13 @@ runPreloader().then(heroIntro)
 /* ═══════════ interactive worlds ═══════════ */
 
 initWorlds(RM)
+
+/* pause decorative CSS loops while their world is off screen */
+const worldObserver = new IntersectionObserver(
+  (entries) => entries.forEach((entry) => entry.target.classList.toggle('in-view', entry.isIntersecting)),
+  { rootMargin: '80px' },
+)
+$$('.world').forEach((el) => worldObserver.observe(el))
 
 /* ═══════════ language rebuilds ═══════════ */
 
